@@ -1,23 +1,29 @@
+import {useState, useEffect} from 'react';
 import logo from './logo.svg';
-import './App.css';
+import ArticleCard from './components/ArticleCard';
+import * as ROUTES from './routes';
+import axios from 'axios';
 
 function App() {
+  const [articles, setArticles] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchArticles = async () => {
+      const data = await axios.get(ROUTES.TEST_API);
+      console.log(data.data);
+      setArticles(data.data);
+      setIsLoading(false);
+    }
+    fetchArticles();
+  }, [])
+  
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="news-container">
+      {articles.length < 1 ? <p>Loading</p> : articles.map((article, i) => (
+        <ArticleCard key={i} article={article} />
+      ))}
     </div>
   );
 }
